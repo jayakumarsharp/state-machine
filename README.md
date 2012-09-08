@@ -32,9 +32,11 @@ One nice feature is the ability to allow multiple functions to be called before 
 ```
 new StateMachine(functions, transitions [, initialState])
 ```
+Creates a new state machine
 * `functions`: an object of functions that the finite state machine has
 * `transitions`: the set (`Array`) defining how to move from state to state.  It must be `[ {state: 'stateName', functions: ['a', 'b'], nextState: 'nextStateName'} , ... ]`
 * `initialState`: optional.  if not specified, the initial state will be `'initial'`
+
 ```
 state()
 ```
@@ -44,16 +46,22 @@ returns the current state of the machine
 on(event, handler)
 ```
 registers an event handler for the specified event
+* `event`: name of event
+* `handler`: function registered for event
 
 ```
 off(event[, handler])
 ```
 removes event handler from specified event.  If handler is null, it removes all handlers from that event
+* `event`: name of event
+* `handler`: optional. function to be removed from event.  it must be the same function that was registered since it uses `==` to determine how to remove it.
+* returns `true` if events were removed and `false` if nothing was removed
 
 ```
 trigger(event)
 ```
 triggers all handlers registered to that event
+`event`: name of event
 
 ## Behavior
 * Upon changing state, it will trigger an event by the name of the state
