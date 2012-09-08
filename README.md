@@ -30,6 +30,12 @@ One nice feature is the ability to allow multiple functions to be called before 
 
 ## API
 ```
+new StateMachine(functions, transitions [, initialState])
+```
+`functions`: an object of functions that the finite state machine has
+`transitions`: the set (`Array`) defining how to move from state to state.  It must be `[ {state: 'stateName', functions: ['a', 'b'], nextState: 'nextStateName'} , ... ]`
+`initialState`: optional.  if not specified, the initial state will be `'initial'`
+```
 state()
 ```
 returns the current state of the machine
