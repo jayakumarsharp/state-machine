@@ -10,7 +10,8 @@ describe('StateMachine', function() {
 			['a', ['b'], 'b'],
 			['b', ['a'], 'a'],
 			['a', ['c'], 'c'],
-			['c', ['a', 'b'], 'b']
+			['c', ['a', 'b'], 'b'],
+			['c', ['c', 'b'], 'b']
 		],
 		stateMachine
 
