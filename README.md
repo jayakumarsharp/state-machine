@@ -34,7 +34,7 @@ new StateMachine(functions, transitions [, initialState])
 ```
 Creates a new state machine
 * `functions`: an object of functions that the finite state machine has
-* `transitions`: the set (`Array`) defining how to move from state to state.  It must be `[ {state: 'stateName', functions: ['a', 'b'], nextState: 'nextStateName'} , ... ]`
+* `transitions`: the set (`Array`) defining how to move from state to state.  It must be in the format `[ 'fromState', ['function1', 'function2'], 'toState' ] , ... ]`
 * `initialState`: optional.  if not specified, the initial state will be `'initial'`
 
 ```
