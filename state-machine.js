@@ -1,86 +1,56 @@
-StateMachine = function(functions, transitions, startState) {
-	var _this = this,
-		state = startState || 'initial',
-		stack = {},
-		functionsOfStateMap = {}
+var StateMachine = function(functions, transitions, initial) {
+	var FROM_STATE = 0, METHODS = 1, TO_STATE = 2
+
+	var self = this,
+		initial = initial || 'initial',
+		stack = [],
+		state
+
+	this.objects = {}
+	this.objects[initial] = {}
+	state = initial
+
+	for(var i=0; i<transitions.length; ++i) {
+		var transition = transitions[i]
+		var object = this.objects[transition[FROM_STATE]] = this.objects[transition[FROM_STATE]] || { },
+			methods = transition[METHODS]
+
+		for(var j=0; j<methods.length; ++j) {
+			var method = methods[j]
+			object[method] = (function(method, methods, transition) {
+				return function() {
+					functions[method].call(self, arguments)
+					if(stack.indexOf(method)==-1) {
+						stack.push(method)
+						//console.log('state', state, 'stack', stack, 'methods', methods, methods.every(function(e) {return stack.indexOf(e)>-1}))
+						if(methods.every(function(e) { return stack.indexOf(e)>-1 })) {
+							stack.length = 0
+							state = transition[TO_STATE]
+						}
+					}
+				}
+			})(method, methods, transition)
+		}
+
+		this.objects[transition[TO_STATE]] = this.objects[transition[TO_STATE]] || {}
+	}
+
+	for(var func in functions) {
+		this[func] = (function (func) {
+			return function() { 
+				this.call(func, arguments)
+			}
+		})(func)
+	}
 
 	this.state = function() {
 		return state
 	}
-	function getFunctionsOfState() {
-		if(functionsOfStateMap[state] == null) {
-			var functions = []
-			for(var i=0; i<transitions.length; i++) {
-				if(state == transitions[i].state) {
-					functions = functions.concat(transitions[i].functions)
-				}
-			}
-			functionsOfStateMap[state] = functions
-		}
-		return functionsOfStateMap[state]
-	}
-	Array.prototype.isSubsetOf = function(arr) {
-		for(var i=0; i<this.length; i++) {
-			if(arr.indexOf(this[i]) < 0) {
-				return false
-			}
-		}
-		return true
-	}
-	for(func in functions) {
-		(function(func) {
-			_this[func] = function() {
-				if(getFunctionsOfState().indexOf(func)>-1) {
-					functions[func].apply(_this, arguments)
-					stack[state] = stack[state] || []
-					if(stack[state].indexOf(func) < 0) {
-						stack[state].push(func)
-					}
-					for(var i=0; i<transitions.length; i++) {
-						if(transitions[i].state == state && transitions[i].functions.isSubsetOf(stack[state])) {
-							state = transitions[i].nextState
-							_this.trigger(state)
-							i = transitions.length
-						}
-					}
-				}
-				else {
-					console.log('function', func, 'not defined in a transition of', state)
-				}
-			}
-		})(func)
-	}
 }
+
 StateMachine.prototype = {
-	on: function(event, handler) {
-		this.handlers = this.handlers || {}
-		this.handlers[event] = this.handlers[event] || []
-		this.handlers[event].push(handler)
-	},
-	trigger: function(event) {
-		this.handlers = this.handlers || {}
-		for(var i in this.handlers[event]) {
-			this.handlers[event][i].apply(this)
-		}
-	},
-	off: function(event, handler) {
-		this.handlers = this.handlers || {}
-		// remove all
-		if(handler == null && this.handlers[event].length > 0) {
-			this.handlers[event] = []
-			return true
-		}
-		else {
-			return false
-		}
-		// remove specified
-		var hasRemoved = false
-		for(var i in this.handlers[event]) {
-			if(handler == this.handlers[event][i]) {
-				this.handlers[event].splice(i, 1)
-				hasRemoved = true
-			}
-		}
-		return hasRemoved
+	call: function(methodName /*, args */) {
+		var method = this.objects[this.state()][methodName]
+		return method && method.call(this, Array.prototype.slice.call(arguments, 1))
 	}
 }
