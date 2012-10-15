@@ -45,4 +45,27 @@ returns the current state of the machine
 ```
 call(methodName, [args, ...])
 ```
-Dynamic dispatch methods.  If the current state isn't allowed to call this function, it will silently do nothing.
+dynamic dispatch methods.  If the current state isn't allowed to call this function, it will silently do nothing.
+```
+on(event, handler)
+```
+registers an event handler for the specified event
+* `event`: name of event
+* `handler`: function registered for event
+
+```
+off(event[, handler])
+```
+removes event handler from specified event.  If handler is null, it removes all handlers from that event
+* `event`: name of event
+* `handler`: optional. function to be removed from event.  it must be the same function that was registered since it uses `==` to determine how to remove it.
+* returns `true` if events were removed and `false` if nothing was removed
+
+```
+trigger(event)
+```
+triggers all handlers registered to that event
+`event`: name of event
+
+## Behavior
+* Upon changing state, it will trigger an event by the name of the state
