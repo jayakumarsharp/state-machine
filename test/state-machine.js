@@ -1,6 +1,6 @@
 describe('StateMachine', function() {
 	var machine = {
-			a: function() { },
+			a: function(bool) { return bool },
 			b: function() { },
 			c: function() { }
 		},
@@ -10,6 +10,7 @@ describe('StateMachine', function() {
 			['a', ['b'], 'b'],
 			['b', ['a'], 'a'],
 			['a', ['c'], 'c'],
+			['a', ['a'], 'a'],
 			['c', ['a', 'b'], 'b'],
 			['c', ['c', 'b'], 'b']
 		],
@@ -19,28 +20,8 @@ describe('StateMachine', function() {
 	beforeEach(function() {
 		stateMachine = new StateMachine(machine, transitions)
 	})
-	describe('#constructor', function() {
-		it('should create an object that has a method for each transition', function() {
-			chai.assert.ok(stateMachine.objects.a != null)
-			chai.assert.ok(stateMachine.objects.b != null)
-			chai.assert.ok(stateMachine.objects.initial != null)
-		})
-		it('should not create extra objects', function() {
-			var count = 0
-			for(var o in stateMachine.objects) ++count
-
-			var states = [],
-				map = { FROM_STATE: 0, TO_STATE: 2 }
-			for(var i=0; i<transitions.length; i++) {
-				for(var s in map) {
-					if(states.indexOf(transitions[i][map[s]])==-1) {
-						states.push(transitions[i][map[s]])
-					}
-				}
-			}
-
-			chai.assert.equal(states.length, count)
-		})
+	afterEach(function() {
+		stateMachine.off()
 	})
 	describe('#call', function() {
 		it('should dispatch the specified method if it is available the current state', function() {
@@ -67,12 +48,60 @@ describe('StateMachine', function() {
 			stateMachine.a()
 			chai.assert.equal(stateMachine.state(), 'a')
 		})
+		it('should be able to accept arguments', function() {
+			chai.assert(machine.a(true))
+			chai.assert(stateMachine.a(true))
+			chai.assert(!stateMachine.a(false))
+			chai.assert(stateMachine.call('a', true))
+			chai.assert(!stateMachine.call('a', false))
+		})
 	})
 	describe('#state', function() {
 		it('should from the from-state to the to-state after calling the transition method', function() {
 			chai.assert.equal(stateMachine.state(), 'initial')
 			stateMachine.call('a')
 			chai.assert.equal(stateMachine.state(), 'a')
+		})
+	})
+	describe('#on', function() {
+		it('should add an event handler', function() {
+			function event() { }
+			stateMachine.on('event', event)
+			chai.assert(stateMachine.off('event', event))
+		})
+	})
+	describe('#off', function() {
+		it('should return true if it removed a registered event', function() {
+			function event() {}
+			stateMachine.on('event', event)
+			chai.assert(stateMachine.off('event', event))
+		})
+		it('should return false if it did not remove a registered event', function() {
+			function event() {}
+			stateMachine.on('event', event)
+			chai.assert(!stateMachine.off('event', function() {}))
+		})
+		it('should return false if it did not remove a registered event when passing no arguments', function() {
+			chai.assert(!stateMachine.off())
+		})
+	})
+	describe('#trigger', function() {
+		it('should trigger a registered event', function() {
+			var called = false
+			stateMachine.on('event', function() {
+				called = true
+			})
+			stateMachine.trigger('event')
+			chai.assert(called)
+		})
+		it('should not trigger an event that has been removed', function() {
+			var called = false
+			stateMachine.on('event', function() {
+				called = true
+			})
+			stateMachine.off('event')
+			stateMachine.trigger('event')
+			chai.assert(!called)
 		})
 	})
 })
