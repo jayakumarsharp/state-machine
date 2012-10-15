@@ -2,7 +2,8 @@ describe('StateMachine', function() {
 	var machine = {
 			a: function(bool) { return bool },
 			b: function() { },
-			c: function() { }
+			c: function() { },
+			d: function(bool) { return bool }
 		},
 		transitions = [
 			['initial', ['a'], 'a'],
@@ -54,6 +55,9 @@ describe('StateMachine', function() {
 			chai.assert(!stateMachine.a(false))
 			chai.assert(stateMachine.call('a', true))
 			chai.assert(!stateMachine.call('a', false))
+		})
+		it('should not call a function that is not in the current state', function() {
+			chai.assert.equal(stateMachine.d(), null)
 		})
 	})
 	describe('#state', function() {
