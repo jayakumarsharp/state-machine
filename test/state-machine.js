@@ -112,5 +112,13 @@ describe('StateMachine', function() {
 			stateMachine.a()
 			chai.assert(called)
 		})
+		it('should be able to accept arguments', function() {
+			var eventValue = null, value = 'test'
+			stateMachine.on('event', function(arg) {
+				eventValue = arg
+			})
+			stateMachine.trigger('event', value)
+			chai.assert.equal(eventValue, value)
+		})
 	})
 })
