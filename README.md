@@ -54,10 +54,10 @@ registers an event handler for the specified event
 * `handler`: function registered for event
 
 ```
-off(event[, handler])
+off([event, handler])
 ```
-removes event handler from specified event.  If handler is null, it removes all handlers from that event
-* `event`: name of event
+removes event handlers.  If event is null, it removes all handlers.  If handler is null, it removes all handlers from that event.
+* `event`: optional. name of event
 * `handler`: optional. function to be removed from event.  it must be the same function that was registered since it uses `==` to determine how to remove it.
 * returns `true` if events were removed and `false` if nothing was removed
 
