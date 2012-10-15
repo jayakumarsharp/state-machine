@@ -21,9 +21,6 @@ describe('StateMachine', function() {
 	beforeEach(function() {
 		stateMachine = new StateMachine(machine, transitions)
 	})
-	afterEach(function() {
-		stateMachine.off()
-	})
 	describe('#call', function() {
 		it('should dispatch the specified method if it is available the current state', function() {
 			var called = false, bak = machine.a
@@ -106,6 +103,14 @@ describe('StateMachine', function() {
 			stateMachine.off('event')
 			stateMachine.trigger('event')
 			chai.assert(!called)
+		})
+		it('should trigger a state event when transitioning', function() {
+			var called = false
+			stateMachine.on('a', function() {
+				called = true
+			})
+			stateMachine.a()
+			chai.assert(called)
 		})
 	})
 })
