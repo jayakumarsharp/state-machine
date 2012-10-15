@@ -59,10 +59,10 @@ var StateMachine = function(functions, transitions, initial) {
 }
 
 StateMachine.prototype = {
-	call: function(methodName /*, args */) {
-		//console.log('calling', methodName, 'args', Array.prototype.slice.call(arguments, 1))
-		var method = this.objects[this.state()][methodName]
-		return method && method.apply(this, Array.prototype.slice.call(arguments, 1))
+	call: function(funcName /*, args */) {
+		//console.log('calling', funcName, 'args', Array.prototype.slice.call(arguments, 1))
+		var func = this.objects[this.state()][funcName]
+		return func && func.apply(this, Array.prototype.slice.call(arguments, 1))
 	},
 	on: function(event, handler) {
 		this.handlers = this.handlers || {}

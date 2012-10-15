@@ -43,9 +43,11 @@ state()
 returns the current state of the machine
 
 ```
-call(methodName, [args, ...])
+call(funcName, [args, ...])
 ```
 dynamic dispatch methods.  If the current state isn't allowed to call this function, it will silently do nothing.
+`funcName`: name of method to invoke
+`args`: optional. arguments passed to method
 ```
 on(event, handler)
 ```
@@ -62,10 +64,11 @@ removes event handlers.  If event is null, it removes all handlers.  If handler 
 * returns `true` if events were removed and `false` if nothing was removed
 
 ```
-trigger(event)
+trigger(event, [args, ...])
 ```
 triggers all handlers registered to that event
 `event`: name of event
+`args`: optional. arguments passed to function.  could be dangerous if there are many events registered
 
 ## Behavior
 * Upon changing state, it will trigger an event by the name of the state
