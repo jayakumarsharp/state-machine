@@ -27,6 +27,19 @@ describe('StateMachine', function() {
 			stateMachine.a()
 			chai.assert.equal(stateMachine.state, 'a')
 		})
+		it('should ignore state changes by methods called within other state machine methods', function() {
+			var sm = new StateMachine({
+				a: function() {
+					this.b()
+				},
+				b: function() {}
+			}, [
+				['initial', ['a'], 'a'],
+				['initial', ['b'], 'b']
+			])
+			sm.a()
+			chai.assert('a', sm.state)
+		})
 	})
 	describe('#on', function() {
 		it('should add an event handler', function() {
