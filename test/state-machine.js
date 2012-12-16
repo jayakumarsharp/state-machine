@@ -21,47 +21,11 @@ describe('StateMachine', function() {
 	beforeEach(function() {
 		stateMachine = new StateMachine(machine, transitions)
 	})
-	describe('#call', function() {
-		it('should dispatch the specified method if it is available the current state', function() {
-			var called = false, bak = machine.a
-			machine.a = function() { called = true }
-			stateMachine.call('a')
-			chai.assert.ok(called)
-			machine.a = bak
-		})
-		it('should transition to state regardless of method invocation order 1', function() {
-			chai.assert.equal(stateMachine.state(), 'initial')
-			stateMachine.call('b')
-			stateMachine.call('c')
-			chai.assert.equal(stateMachine.state(), 'c')
-		})
-		it('should transition to state regardless of method invocation order 2', function() {
-			chai.assert.equal(stateMachine.state(), 'initial')
-			stateMachine.call('c')
-			stateMachine.call('b')
-			chai.assert.equal(stateMachine.state(), 'c')			
-		})
-		it('should be able to invoke call by calling directly from the state machine object', function() {
-			chai.assert.equal(stateMachine.state(), 'initial')
-			stateMachine.a()
-			chai.assert.equal(stateMachine.state(), 'a')
-		})
-		it('should be able to accept arguments', function() {
-			chai.assert(machine.a(true))
-			chai.assert(stateMachine.a(true))
-			chai.assert(!stateMachine.a(false))
-			chai.assert(stateMachine.call('a', true))
-			chai.assert(!stateMachine.call('a', false))
-		})
-		it('should not call a function that is not in the current state', function() {
-			chai.assert.equal(stateMachine.d(), null)
-		})
-	})
 	describe('#state', function() {
 		it('should from the from-state to the to-state after calling the transition method', function() {
-			chai.assert.equal(stateMachine.state(), 'initial')
-			stateMachine.call('a')
-			chai.assert.equal(stateMachine.state(), 'a')
+			chai.assert.equal(stateMachine.state, 'initial')
+			stateMachine.a()
+			chai.assert.equal(stateMachine.state, 'a')
 		})
 	})
 	describe('#on', function() {

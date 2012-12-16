@@ -94,6 +94,7 @@ StateMachine.prototype = {
 			var transition = this._getTransition(funcName) 
 			if(transition != null) {
 				this.state = transition.toState
+				this.trigger(this.state)
 			}
 		}
 	},
