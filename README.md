@@ -15,15 +15,15 @@ var sm = new StateMachine({
     [ 'ac', 		['a'],		'a'  ]
   ]
 )
-console.log(sm.state())
-sm.c()
-console.log(sm.state())
-sm.a()
-console.log(sm.state())
-sm.b()
-console.log(sm.state())
-sm.a()
-console.log(sm.state())
+console.log(sm.state)	// initial
+sm.c()					// calling c
+console.log(sm.state)	// initial
+sm.a()					// calling a
+console.log(sm.state)	// ac
+sm.b()					// calling b
+console.log(sm.state)	// ac
+sm.a()					// calling a
+console.log(sm.state)	// a
 ```
 
 One nice feature is the ability to allow multiple functions to be called before moving on to the next state, like the transition from 'initial' to 'ac'.  This is helpful when you need to make a couple asynchronous calls and have them return before moving on to the next state.
@@ -38,16 +38,9 @@ Creates a new state machine
 * `initialState`: optional.  if not specified, the initial state will be `'initial'`
 
 ```
-state()
+state
 ```
-returns the current state of the machine
-
-```
-call(funcName, [args, ...])
-```
-dynamic dispatch methods.  If the current state isn't allowed to call this function, it will silently do nothing.
-* `funcName`: name of method to invoke
-* `args`: optional. arguments passed to method 
+property of the current state of the machine
 
 ```
 on(event, handler)
