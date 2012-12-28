@@ -82,7 +82,6 @@ StateMachine.prototype = {
 	},
 	_createFunctions: function(functions) {
 		for(var funcName in functions) {
-
 			this[funcName] = this._createFunction(funcName, functions[funcName])
 		}
 	},
