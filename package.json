@@ -4,5 +4,5 @@
   "version": "2.0.0",
   "author": "Matthew Prestifilippo",
   "description": "Finite state machine",
-  "main": ".state-machine.js"
+  "main": "./state-machine.js"
 }
