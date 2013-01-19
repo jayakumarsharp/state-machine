@@ -1,6 +1,5 @@
 {
   "name": "state-machine",
-  "preferGlobal": "true",
   "version": "2.0.0",
   "author": "Matthew Prestifilippo",
   "description": "Finite state machine",
