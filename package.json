@@ -1,6 +1,6 @@
 {
   "name": "state-machine",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "author": "Matthew Prestifilippo",
   "description": "Finite state machine",
   "main": "./state-machine.js",

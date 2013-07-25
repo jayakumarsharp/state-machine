@@ -1,7 +1,7 @@
 (function() {
 	var EventEmitter = (function() {
 		var EventEmitter = null;
-		if(this.require) {
+		if(typeof require == 'function') {
 			EventEmitter = require('events').EventEmitter;
 		}
 		else {
@@ -56,13 +56,13 @@
 			// add functions to the object
 			this._sm_createFunctions(functions);
 
+			for(var state in ons) {
+				this.on(state, ons[state]);
+			}
+			
 			this.state = 'initial';
 		};
 
-		// inherit
-		for(var f in EventEmitter.prototype) {
-			StateMachine.prototype[f] = EventEmitter.prototype[f];
-		}
 
 		StateMachine.prototype = {
 			// private
@@ -129,9 +129,16 @@
 				return transition;
 			}
 		};
+
+		// inherit
+		for(var f in EventEmitter.prototype) {
+			StateMachine.prototype[f] = EventEmitter.prototype[f];
+		}
+
+		return StateMachine;
 	})(EventEmitter);
 
-	if (this.module && module.exports) {
+	if (typeof module == 'object' && module.exports) {
 		module.exports = StateMachine;
 	}
 	if (this.define) {
