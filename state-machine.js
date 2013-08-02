@@ -46,7 +46,6 @@
 	var StateMachine = (function(EventEmitter) {
 		var StateMachine = function(functions, transitions, ons) {
 			this._sm_slice = Array.prototype.slice;
-			this._sm_running = 0;
 			this._sm_stack = [];
 			this._sm_transitions = {};
 
@@ -87,9 +86,7 @@
 			},
 			_sm_createFunction: function(funcName, func) {
 				return function() {
-					this._sm_running++;
 					func.apply(this, this._sm_slice.call(arguments));
-					this._sm_running--;
 					var transition = this._sm_getTransition(funcName);
 					if(transition != null) {
 						this.state = transition.toState;
@@ -98,32 +95,28 @@
 				};
 			},
 			_sm_getTransition: function(funcName) {
-				var transition = null;
-				if(!this._sm_running) {
-					var stack = this._sm_stack,
-						transitions = this._sm_transitions[this.state], 
-						length = transitions && transitions.length || 0,
-						canTransition, 
-						completedStateTransition = function(step) {
-							return stack.indexOf(step) > -1;
-						};
+				var transition = null, stack = this._sm_stack,
+					transitions = this._sm_transitions[this.state], 
+					length = transitions && transitions.length || 0,
+					canTransition, 
+					completedStateTransition = function(step) {
+						return stack.indexOf(step) > -1;
+					};
 
-					if(length) {
-						this._sm_stack.push(funcName);
+				if(length) {
+					this._sm_stack.push(funcName);
+				}
+
+				for(var i=0; i<length; i++) {
+					transition = transitions[i];
+					canTransition = transition.steps.every(completedStateTransition);
+
+					if(canTransition) {
+						this._sm_stack.length = 0;
+						break;
 					}
-
-
-					for(var i=0; i<length; i++) {
-						transition = transitions[i];
-						canTransition = transition.steps.every(completedStateTransition);
-
-						if(canTransition) {
-							this._sm_stack.length = 0;
-							break;
-						}
-						else {
-							transition = null;
-						}
+					else {
+						transition = null;
 					}
 				}
 				return transition;
